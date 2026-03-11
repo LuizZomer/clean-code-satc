@@ -32,6 +32,23 @@ class Match {
     }
 }
 
+class MatchResult {
+    private Match match;
+
+    public MatchResult(Match match) {
+        this.match = match;
+    }
+
+    public String determineWinner() {
+        int homeGoals = match.homeStats.goals;
+        int awayGoals = match.awayStats.goals;
+
+        if (homeGoals > awayGoals) return match.homeTeam;
+        if (homeGoals < awayGoals) return match.awayTeam;
+        return "Empate";
+    }
+}
+
 public class MatchManager {
 
     public void registerMatch(Match match) {
@@ -56,16 +73,8 @@ public class MatchManager {
     }
 
     public void generateReport(Match match) {
-
-        String winner;
-
-        if (match.homeStats.goals > match.awayStats.goals) {
-            winner = match.homeTeam;
-        } else if (match.homeStats.goals < match.awayStats.goals) {
-            winner = match.awayTeam;
-        } else {
-            winner = "Empate";
-        }
+        MatchResult result = new MatchResult(match);
+        String winner = result.determineWinner();
 
         System.out.println("=== Relatório da Partida ===");
         System.out.println("Vencedor: " + winner);
@@ -81,18 +90,5 @@ public class MatchManager {
         System.out.println("Total de Cartões: " +
                 (match.homeStats.yellowCards + match.awayStats.yellowCards +
                  match.homeStats.redCards + match.awayStats.redCards));
-    }
-
-    public static void main(String[] args) {
-
-        TeamStatistics home = new TeamStatistics(2, 55, 10, 15, 3, 1);
-        TeamStatistics away = new TeamStatistics(1, 45, 8, 12, 2, 0);
-
-        Match match = new Match("Time A", "Time B", home, away);
-
-        MatchManager manager = new MatchManager();
-
-        manager.registerMatch(match);
-        manager.generateReport(match);
     }
 }
